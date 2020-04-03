@@ -12,10 +12,10 @@ env:
 
 jobs:
   build_and_test:
+    if: $env.RunTestsOnly == false
     runs-on: [ubuntu-16.04]
 
     steps:
-    - if: $env.RunTestsOnly == false
     - uses: actions/checkout@v2
 
     - name: Build LoRa Engine
