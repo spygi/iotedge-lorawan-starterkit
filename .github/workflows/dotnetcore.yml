@@ -12,7 +12,7 @@ env:
 
 jobs:
   build_and_test:
-    if: ${{env.RunTestsOnly}} == false
+    if: ${{RunTestsOnly}} == false
     runs-on: [ubuntu-16.04]
 
     steps:
