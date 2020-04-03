@@ -19,7 +19,7 @@ jobs:
     - name: Setup .NET Core # could ommit/get latest
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.101
+        dotnet-version: 2.1
     - name: Build LoRa Engine
       run: dotnet build --configuration $buildConfiguration ./LoRaEngine/LoRaEngine.sln
     - name: Build C# Samples/DecoderSample
@@ -30,6 +30,9 @@ jobs:
       run: docker pull redis:5.0.4-alpine
     - name: Run unit tests
       run: |
-        mkdir $(Build.SourcesDirectory)\results;
         dotnet test --logger trx ./LoRaEngine/test/LoRaWanNetworkServer.Test/*.csproj &&  dotnet test --logger trx ./LoRaEngine/modules/LoRaWanNetworkSrvModule/LoRaToolsTest/*.csproj && dotnet test --logger trx ./LoRaEngine/test/LoraKeysManagerFacade.Test/*.csproj
+    - name: PublishTestResults@2
+      uses: montudor/action-zip@v0.1.0
+      with:
+        args: zip -qq -r ./dir.zip $(Build.SourcesDirectory)\results
 
