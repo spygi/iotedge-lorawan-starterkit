@@ -26,7 +26,7 @@ jobs:
     - name: Pulling Redis Cache image
       run: docker pull redis:5.0.4-alpine
     - name: Run unit tests
-      if: env.RunTests == true
+      if: env.RunTests == 'true'
       
       run: |
         dotnet test --logger trx ./LoRaEngine/test/LoRaWanNetworkServer.Test/*.csproj &&  dotnet test --logger trx ./LoRaEngine/modules/LoRaWanNetworkSrvModule/LoRaToolsTest/*.csproj && dotnet test --logger trx ./LoRaEngine/test/LoraKeysManagerFacade.Test/*.csproj
