@@ -21,8 +21,15 @@ jobs:
       with:
         dotnet-version: 3.1.101
     - name: Build LoRa Engine
-      run: echo $buildConfiguration && dotnet build --configuration $buildConfiguration ./LoRaEngine/LoRaEngine.sln
+      run: dotnet build --configuration $buildConfiguration ./LoRaEngine/LoRaEngine.sln
     - name: Build C# Samples/DecoderSample
       run: dotnet build --configuration $buildConfiguration ./Samples/DecoderSample
     - name: Build LoRa Simulator
       run: dotnet build --configuration $buildConfiguration ./LoRaEngine/modules/LoRaSimulator/LoRaSimulator.sln
+    - name: Pulling Redis Cache image
+      run: docker pull redis:5.0.4-alpine
+    - name: Run unit tests
+      run: |
+        mkdir $(Build.SourcesDirectory)\results;
+        dotnet test --logger trx ./LoRaEngine/test/LoRaWanNetworkServer.Test/*.csproj &&  dotnet test --logger trx ./LoRaEngine/modules/LoRaWanNetworkSrvModule/LoRaToolsTest/*.csproj && dotnet test --logger trx ./LoRaEngine/test/LoraKeysManagerFacade.Test/*.csproj
+
