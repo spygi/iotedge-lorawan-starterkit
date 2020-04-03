@@ -1,10 +1,13 @@
-name: .NET Core
+name: Basic pipeline
 
 on:
   push:
     branches: [ master, dev ] # batch is not available yet
   pull_request:
     branches: [ master, dev]
+
+env:
+  buildConfiguration: 'Release' # variables can be in pipeline, jobs and steps
 
 jobs:
   build_and_test:
