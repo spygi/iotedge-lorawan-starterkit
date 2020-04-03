@@ -30,8 +30,13 @@ jobs:
       if: env.RunTestsOnly == true
       run: |
         dotnet test --logger trx ./LoRaEngine/test/LoRaWanNetworkServer.Test/*.csproj &&  dotnet test --logger trx ./LoRaEngine/modules/LoRaWanNetworkSrvModule/LoRaToolsTest/*.csproj && dotnet test --logger trx ./LoRaEngine/test/LoraKeysManagerFacade.Test/*.csproj
-    - name: PublishTestResults@2
+    - name: Zip results
       uses: montudor/action-zip@v0.1.0
       with:
-        args: zip -qq -r ./dir.zip . -i $(Build.SourcesDirectory)\results
+        args: zip -qq -r ./unit-test-results.zip . -i $(Build.SourcesDirectory)\results
+    - name: PublishTestResults@2
+      uses: actions/upload-artifact@v1
+      with:
+        name: unit-test-results
+        path: ./unit-test-results.zip
 
