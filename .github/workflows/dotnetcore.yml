@@ -8,11 +8,10 @@ on:
 
 env:
   buildConfiguration: 'Release' # variables can be in pipeline, jobs and steps
-  RunTestsOnly: false
+  RunTests: true
 
 jobs:
   build_and_test:
-    if: ${{RunTestsOnly}} == false
     runs-on: [ubuntu-16.04]
 
     steps:
@@ -27,6 +26,8 @@ jobs:
     - name: Pulling Redis Cache image
       run: docker pull redis:5.0.4-alpine
     - name: Run unit tests
+      if: env.RunTests == true
+      
       run: |
         dotnet test --logger trx ./LoRaEngine/test/LoRaWanNetworkServer.Test/*.csproj &&  dotnet test --logger trx ./LoRaEngine/modules/LoRaWanNetworkSrvModule/LoRaToolsTest/*.csproj && dotnet test --logger trx ./LoRaEngine/test/LoraKeysManagerFacade.Test/*.csproj
     - name: Zip results
