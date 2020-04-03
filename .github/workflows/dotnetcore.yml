@@ -33,7 +33,7 @@ jobs:
     - name: Zip results
       uses: montudor/action-zip@v0.1.0
       with:
-        args: zip -qq -r ./unit-test-results.zip . -i $(Build.SourcesDirectory)\results
+        args: zip -q -r ./unit-test-results.zip . -i $(Build.SourcesDirectory)\results
     - name: PublishTestResults@2
       uses: actions/upload-artifact@v1
       with:
