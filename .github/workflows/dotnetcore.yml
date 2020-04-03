@@ -1,0 +1,42 @@
+name: Basic pipeline
+
+on:
+  push:
+    branches: [ master, dev ] # batch is not available yet
+  pull_request:
+    branches: [ master, dev]
+
+env:
+  buildConfiguration: 'Release' # variables can be in pipeline, jobs and steps
+  RunTests: true
+
+jobs:
+  build_and_test:
+    runs-on: [ubuntu-16.04]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build LoRa Engine
+      run: dotnet build --configuration $buildConfiguration ./LoRaEngine/LoRaEngine.sln
+    - name: Build C# Samples/DecoderSample
+      run: dotnet build --configuration $buildConfiguration ./Samples/DecoderSample
+    - name: Build LoRa Simulator
+      run: dotnet build --configuration $buildConfiguration ./LoRaEngine/modules/LoRaSimulator/LoRaSimulator.sln
+    - name: Pulling Redis Cache image
+      run: docker pull redis:5.0.4-alpine
+    - name: Run unit tests
+      if: env.RunTests == 'true'
+      
+      run: |
+        dotnet test --logger trx ./LoRaEngine/test/LoRaWanNetworkServer.Test/*.csproj &&  dotnet test --logger trx ./LoRaEngine/modules/LoRaWanNetworkSrvModule/LoRaToolsTest/*.csproj && dotnet test --logger trx ./LoRaEngine/test/LoraKeysManagerFacade.Test/*.csproj -o unit-test-results
+    - name: Zip results
+      uses: montudor/action-zip@v0.1.0
+      with:
+        args: zip -q -r unit-test-results.zip . -i unit-test-results
+    - name: PublishTestResults@2
+      uses: actions/upload-artifact@v1
+      with:
+        name: unit-test-results
+        path: unit-test-results.zip
+
